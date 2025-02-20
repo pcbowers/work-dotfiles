@@ -1,0 +1,62 @@
+#!/bin/bash
+
+case $- in
+  *i*) ;;
+  *) return ;;
+esac
+
+export HISTCONTROL=erasedups:ignoredups:ignorespace
+export HISTSIZE=100000
+export HISTFILESIZE=100000
+
+shopt -s histappend
+shopt -s checkwinsize
+
+export VISUAL=nvim
+export EDITOR=nvim
+export SVN_EDITOR=nvim
+
+source "$HOME/.bash_aliases"
+source "$HOME/.bash_functions"
+
+export PS1="\[\e[32m\]\u\[\e[m\]\[\e[32m\]@\[\e[m\]\[\e[32m\]\h\[\e[m\]:\[\e[34m\]\w\[\e[m\]\\$ "
+
+bind '"\e[A": history-substring-search-backward'
+bind '"\e[B": history-substring-search-forward'
+bind '"\C-H": backward-kill-word'
+
+if [ -d "$HOME/bin" ]; then
+  export PATH="$HOME/bin:$PATH"
+fi
+
+if [ -d "$HOME/.local/bin" ]; then
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+
+if [ -d "$HOME/.local/share/JetBrains/Toolbox/scripts" ]; then
+  export PATH="$HOME/.local/share/JetBrains/Toolbox/scripts:$PATH"
+fi
+
+if [ -d "$HOME/.sdkman" ]; then
+  export SDKMAN_DIR="$HOME/.sdkman"
+  export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
+  source "$HOME/.sdkman/bin/sdkman-init.sh"
+fi
+
+eval "$(op inject --in-file "${HOME}/.secrets")"
+
+# fnm
+if [ -d "$HOME/.local/share/fnm" ]; then
+  export FNM_PATH="$HOME/.local/share/fnm"
+  export PATH="$FNM_PATH:$PATH"
+  eval "$(fnm env --use-on-cd --version-file-strategy=recursive --corepack-enabled --resolve-engines --shell bash)"
+  eval "$(fnm completions --shell bash)"
+fi
+
+if [ -d "$HOME/.local/share/pnpm" ]; then
+  export PNPM_HOME="/home/pcbowers/.local/share/pnpm"
+  export PATH="$HOME/.local/share/pnpm:$PATH"
+fi
+
+eval "$(starship init bash)"
+eval "$(zoxide init bash)"

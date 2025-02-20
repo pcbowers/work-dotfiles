@@ -1,0 +1,13 @@
+[user]
+    name = {{ .name }}
+    email = {{ .work_email }}
+    signingkey = {{ onepasswordRead "op://private/github/public key" }}
+
+[gpg]
+  format = ssh
+
+[gpg "ssh"]
+  program = "/opt/1Password/op-ssh-sign"
+
+[commit]
+  gpgsign = true
