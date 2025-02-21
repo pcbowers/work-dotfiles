@@ -25,6 +25,12 @@ bind '"\e[A": history-substring-search-backward'
 bind '"\e[B": history-substring-search-forward'
 bind '"\C-H": backward-kill-word'
 
+eval "$(op inject --in-file "${HOME}/.secrets")"
+
+if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+  source /etc/bash_completion
+fi
+
 if [ -d "$HOME/bin" ]; then
   export PATH="$HOME/bin:$PATH"
 fi
@@ -43,20 +49,16 @@ if [ -d "$HOME/.sdkman" ]; then
   source "$HOME/.sdkman/bin/sdkman-init.sh"
 fi
 
-eval "$(op inject --in-file "${HOME}/.secrets")"
-
-# fnm
 if [ -d "$HOME/.local/share/fnm" ]; then
   export FNM_PATH="$HOME/.local/share/fnm"
   export PATH="$FNM_PATH:$PATH"
-  eval "$(fnm env --use-on-cd --version-file-strategy=recursive --corepack-enabled --resolve-engines --shell bash)"
+  eval "$(fnm env --use-on-cd --corepack-enabled --version-file-strategy=recursive --resolve-engines --shell bash)"
   eval "$(fnm completions --shell bash)"
 fi
 
-if [ -d "$HOME/.local/share/pnpm" ]; then
-  export PNPM_HOME="/home/pcbowers/.local/share/pnpm"
-  export PATH="$HOME/.local/share/pnpm:$PATH"
-fi
+export PNPM_HOME="/home/pcbowers/.local/share/pnpm"
+export PATH="$HOME/.local/share/pnpm:$PATH"
 
 eval "$(starship init bash)"
+
 eval "$(zoxide init bash)"

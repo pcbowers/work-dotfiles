@@ -1,0 +1,530 @@
+#!/bin/bash
+
+set -o pipefail
+
+log_info() { echo -e "\e[1;32m[INFO]\e[0m $1"; }
+log_warn() { echo -e "\e[1;33m[WARN]\e[0m $1"; }
+log_error() { echo -e "\e[1;31m[ERROR]\e[0m $1"; }
+is_installed() { [[ "$(command -v "$1")" ]] && return 0; }
+
+# =============================================================================
+# Apt Packages
+# =============================================================================
+
+log_info "Upgrading system packages..."
+sudo apt upgrade -y
+
+{{ range .packages.apt -}}
+if [[ "$(sudo apt list --installed {{ . | quote }} 2> /dev/null)" ]]; then
+  log_info "Skipping {{ . | quote }}: already installed"
+else
+  log_info "Installing {{ . }}..."
+  sudo apt install -y {{ . | quote }}
+
+  if [[ "$(sudo apt list --installed {{ . | quote }} 2> /dev/null)" ]]; then
+    log_info "Successfully installed {{ . }}"
+  else
+    log_error "Failed to install {{ . }}"
+  fi
+fi
+{{ end -}}
+
+# =============================================================================
+# Flatpak
+# =============================================================================
+
+if is_installed "flatpak"; then
+  log_info "Skipping flatpak: already installed"
+else
+  log_info "Installing flatpak..."
+
+  sudo apt install -y flatpak
+  sudo apt install -y gnome-software-plugin-flatpak
+  flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+  log_warning "You'll have to restart to make flatpak applications appear in the app menu"
+
+  if is_installed "flatpak"; then
+    log_info "Successfully installed flatpak"
+  else
+    log_error "Failed to install flatpak"
+  fi
+fi
+
+{{ range .packages.flatpak -}}
+if [[ "$(flatpak info {{ . | quote }} 2> /dev/null)" ]]; then
+  log_info "Skipping {{ . | quote }}: already installed"
+else
+  log_info "Installing {{ . }}..."
+
+  flatpak install -y flathub {{ . | quote }}
+
+  if [[ "$(flatpak info {{ . | quote }} 2> /dev/null)" ]]; then
+    log_info "Successfully installed {{ . }}"
+  else
+    log_error "Failed to install {{ . }}"
+  fi
+fi
+{{ end -}}
+
+# =============================================================================
+# Settings
+# =============================================================================
+
+# =====================================
+# Desktop
+# =====================================
+{{ if has "desktop" .settings -}}
+log_info "Applying desktop settings..."
+
+desktop_settings() {
+  gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+  gsettings set org.gnome.desktop.interface clock-show-seconds true
+  gsettings set org.gnome.desktop.interface clock-show-date true
+  gsettings set org.gnome.desktop.interface clock-show-weekday true
+  gsettings set org.gnome.desktop.interface clock-format '12h'
+  gsettings set org.gnome.desktop.interface show-battery-percentage true
+
+  gsettings set org.gnome.shell.extensions.ding icon-size 'small'
+  gsettings set org.gnome.shell.extensions.ding show-home false
+}
+
+if desktop_settings; then
+  log_info "Successfully applied desktop settings"
+else
+  log_error "Failed to apply desktop settings"
+fi
+{{ end -}}
+
+# =====================================
+# Power
+# =====================================
+{{ if has "power" .settings -}}
+log_info "Applying power settings..."
+
+power_settings() {
+  gsettings set org.gnome.settings-daemon.plugins.power lid-close-ac-action 'nothing'
+  gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+  gsettings set org.gnome.desktop.session idle-delay 0
+  powerprofilesctl set performance
+}
+
+if power_settings; then
+  log_info "Successfully applied power settings"
+else
+  log_error "Failed to apply power settings"
+fi
+{{ end -}}
+
+# =====================================
+# Graphics
+# =====================================
+{{ if has "graphics" .settings -}}
+if [[ "$(prime-select query)" == "nvidia" ]]; then
+  log_info "Skipping graphics settings: already applied"
+else
+  log_info "Applying graphics settings..."
+
+  graphics_settings() {
+    sudo prime-select nvidia
+  }
+
+  if graphics_settings; then
+    log_info "Successfully applied graphics settings"
+  else
+    log_error "Failed to apply graphics settings"
+  fi
+fi
+{{ end -}}
+
+# =====================================
+# Tiling Assistant
+# =====================================
+{{ if has "tiling-assistant" .settings -}}
+log_info "Applying tiling-assistant settings..."
+
+tiling_assistant_settings() {
+  gsettings set org.gnome.shell.extensions.tiling-assistant enable-tiling-popup true
+  gsettings set org.gnome.shell.extensions.tiling-assistant enable-raise-tile-group false
+  gsettings set org.gnome.shell.extensions.tiling-assistant enable-untile-animations false
+  gsettings set org.gnome.shell.extensions.tiling-assistant enable-tile-animations false
+  gsettings set org.gnome.shell.extensions.tiling-assistant disable-tile-groups true
+}
+
+if tiling_assistant_settings; then
+  log_info "Successfully applied tiling-assistant settings"
+else
+  log_error "Failed to apply tiling-assistant settings"
+fi
+{{ end -}}
+
+# =====================================
+# Dock
+# =====================================
+{{ if has "dock" .settings -}}
+log_info "Applying dock settings..."
+
+dock_settings() {
+  gsettings set org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 44
+  gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'focus-minimize-or-previews'
+  gsettings set org.gnome.shell.extensions.dash-to-dock show-mounts false
+  gsettings set org.gnome.shell.extensions.dash-to-dock show-trash false
+}
+
+if dock_settings; then
+  log_info "Successfully applied dock settings"
+else
+  log_error "Failed to apply dock settings"
+fi
+{{ end -}}
+
+# =====================================
+# Peripherals
+# =====================================
+{{ if has "peripherals" .settings -}}
+log_info "Applying peripherals settings..."
+
+peripherals_settings() {
+  gsettings set org.gnome.desktop.peripherals.mouse speed -0.6
+}
+
+if peripherals_settings; then
+  log_info "Successfully applied peripherals settings"
+else
+  log_error "Failed to apply peripherals settings"
+fi
+{{ end -}}
+
+# =====================================
+# Keybindings
+# =====================================
+{{ if has "keybindings" .settings -}}
+log_info "Applying keybindings settings..."
+
+keybindings_settings() {
+  gsettings set org.gnome.shell.keybindings toggle-message-tray "['<Super>m']"
+  gsettings set org.freedesktop.ibus.panel.emoji hotkey '[]'
+
+  gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/']"
+
+  gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ name '1Password Quick Access'
+  gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ command '1password --quick-access'
+  gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ binding '<Control><Shift>Space'
+
+  gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ name 'Screensaver'
+  gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ command '/bin/bash -c "mpv --profile=screensaver $HOME/Videos/aerial4k/*"'
+  gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ binding '<Super><Control>a'
+}
+
+if keybindings_settings; then
+  log_info "Successfully applied keybindings settings"
+else
+  log_error "Failed to apply keybindings settings"
+fi
+{{ end -}}
+
+# =============================================================================
+# Custom Packages
+# =============================================================================
+
+# =====================================
+# Google Chrome
+# =====================================
+{{ if has "google-chrome" .packages.custom -}}
+if is_installed "google-chrome"; then
+  log_info "Skipping google-chrome: already installed"
+else
+  log_info "Installing google-chrome..."
+
+  curl -L https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o chrome.deb
+  sudo apt install -y ./chrome.deb
+  rm -rf ./chrome.deb
+
+  log_warn "You'll have to install Teams, Outlook, and Spotiy as PWAs manually"
+  log_warn "I'd suggest making sure Teams and Outlook have Notifications enabled as well"
+
+  if is_installed "google-chrome"; then
+    log_info "Successfully installed google-chrome"
+  else
+    log_error "Failed to install google-chrome"
+  fi
+fi
+{{ end -}}
+
+# =====================================
+# VS Code
+# =====================================
+{{ if has "vs-code" .packages.custom -}}
+if is_installed "code"; then
+  log_info "Skipping vs-code: already installed"
+else
+  log_info "Installing vs-code..."
+
+  curl -L https://update.code.visualstudio.com/latest/linux-deb-x64/stable -o vscode.deb
+  sudo apt install -y ./vscode.deb
+  rm -rf ./vscode.deb
+
+  if is_installed "code"; then
+    log_info "Successfully installed vs-code"
+  else
+    log_error "Failed to install vs-code"
+  fi
+fi
+{{ end -}}
+
+# =====================================
+# Zoxide
+# =====================================
+{{ if has "zoxide" .packages.custom -}}
+if is_installed "zoxide"; then
+  log_info "Skipping zoxide: already installed"
+else
+  log_info "Installing zoxide..."
+
+  curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+
+  if is_installed "zoxide"; then
+    log_info "Successfully installed zoxide"
+  else
+    log_error "Failed to install zoxide"
+  fi
+fi
+{{ end -}}
+
+# =====================================
+# Starship
+# =====================================
+{{ if has "starship" .packages.custom -}}
+if is_installed "starship"; then
+  log_info "Skipping starship: already installed"
+else
+  log_info "Installing starship..."
+
+  curl -sS https://starship.rs/install.sh | sh
+
+  if is_installed "starship"; then
+    log_info "Successfully installed starship"
+  else
+    log_error "Failed to install starship"
+  fi
+fi
+{{ end -}}
+
+# =====================================
+# mpv
+# =====================================
+{{ if has "mpv" .packages.custom -}}
+if is_installed "mpv"; then
+  log_info "Skipping mpv: already installed"
+else
+  log_info "Installing mpv..."
+
+  sudo curl --output-dir /etc/apt/trusted.gpg.d -O https://apt.fruit.je/fruit.gpg
+  echo "deb http://apt.fruit.je/ubuntu $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") mpv" | sudo tee /etc/apt/sources.list.d/fruit.list
+  sudo apt update && sudo apt install -y mpv
+
+  if is_installed "mpv"; then
+    log_info "Successfully installed mpv"
+  else
+    log_error "Failed to install mpv"
+  fi
+fi
+{{ end -}}
+
+# =====================================
+# Cisco AnyConnect
+# =====================================
+{{ if has "cisco-anyconnect" .packages.custom -}}
+if is_installed "/opt/cisco/secureclient/bin/vpn"; then
+  log_info "Skipping cisco-anyconnect: already installed"
+else
+  log_info "Installing cisco-anyconnect..."
+
+  read -e -rp "Enter the full path to the Cisco AnyConnect Installer (download from https://vpn.liberty.edu):" -i "$HOME/Downloads/" installer_path
+  sudo bash "$installer_path"
+  rm -rf "$installer_path"
+
+  if is_installed "/opt/cisco/secureclient/bin/vpn"; then
+    log_info "Successfully installed cisco-anyconnect"
+  else
+    log_error "Failed to install cisco-anyconnect"
+  fi
+fi
+{{ end -}}
+
+# =====================================
+# Ghostty
+# =====================================
+{{ if has "ghostty" .packages.custom -}}
+if is_installed "ghostty"; then
+  log_info "Skipping ghostty: already installed"
+else
+  log_info "Installing ghostty..."
+
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/mkasberg/ghostty-ubuntu/HEAD/install.sh)"
+
+  if is_installed "ghostty"; then
+    log_info "Successfully installed ghostty"
+  else
+    log_error "Failed to install ghostty"
+  fi
+fi
+{{ end -}}
+
+# =====================================
+# SDKMAN!
+# =====================================
+{{ if has "sdkman" .packages.custom -}}
+if [[ -d "$HOME/.sdkman" ]]; then
+  log_info "Skipping SDKMAN!: already installed"
+else
+  log_info "Installing SDKMAN!..."
+
+  curl -s "https://get.sdkman.io?rcupdate=false" | bash
+  source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+  sdk install java
+  sdk install gradle
+  rm -rf "$HOME/.sdkman/etc/config"
+  ln -sf "$HOME/.config/sdkman/config" "$HOME/.sdkman/etc/config"
+
+  if is_installed "sdk"; then
+    log_info "Successfully installed SDKMAN!"
+  else
+    log_error "Failed to install SDKMAN!"
+  fi
+fi
+{{ end -}}
+
+# =====================================
+# uv
+# =====================================
+{{ if has "uv" .packages.custom -}}
+if is_installed "uv"; then
+  log_info "Skipping uv: already installed"
+else
+  log_info "Installing uv..."
+
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+
+  if is_installed "uv"; then
+    log_info "Successfully installed uv"
+  else
+    log_error "Failed to install uv"
+  fi
+fi
+{{ end -}}
+
+# =====================================
+# fnm
+# =====================================
+{{ if has "fnm" .packages.custom -}}
+if is_installed "fnm"; then
+  log_info "Skipping fnm: already installed"
+else
+  log_info "Installing fnm..."
+
+  curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
+  export PATH="$HOME/.local/share/fnm:$PATH"
+  eval "$(fnm env --corepack-enabled --shell bash)"
+
+  COREPACK_ENABLE_DOWNLOAD_PROMPT=0 fnm install --lts
+  PNPM_HOME="/home/pcbowers/.local/share/pnpm" pnpm install -g @angular/cli
+
+  if is_installed "fnm"; then
+    log_info "Successfully installed fnm"
+  else
+    log_error "Failed to install fnm"
+  fi
+fi
+{{ end -}}
+
+# =====================================
+# Docker
+# =====================================
+{{ if has "docker" .packages.custom -}}
+if is_installed "docker"; then
+  log_info "Skipping docker: already installed"
+else
+  log_info "Installing docker..."
+
+  sudo apt update
+  sudo apt install ca-certificates curl
+  sudo install -m 0755 -d /etc/apt/keyrings
+  sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+      $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | sudo tee /etc/apt/sources.list.d/docker.list
+  sudo apt update && sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin pass
+
+  curl -L https://desktop.docker.com/linux/main/amd64/docker-desktop-amd64.deb -o docker-desktop.deb
+  sudo apt install -y ./docker-desktop.deb
+  rm -rf ./docker-desktop.deb
+
+  gpg --quick-generate-key "{{ .name }} <{{ .work_email }}>"
+  pass init "$(gpg --list-keys --with-colons {{ .work_email | quote }} | awk -F: '/^pub:/ { getline; print $10 }')"
+
+  docker desktop start
+
+  docker login
+  docker login nxrm.liberty.edu:5000
+  docker login nexus.liberty.edu:5001
+  docker login registry.redhat.io
+
+  if is_installed "docker"; then
+    log_info "Successfully installed docker"
+  else
+    log_error "Failed to install docker"
+  fi
+fi
+{{ end -}}
+
+# =====================================
+# puppet
+# =====================================
+{{ if has "puppet" .packages.custom -}}
+if is_installed "puppet"; then
+  log_info "Skipping puppet: already installed"
+else
+  log_info "Installing puppet..."
+
+  curl -k https://puppetprod01.ipa.liberty.edu:8140/packages/current/install.bash | sudo bash
+  sudo puppet agent -t
+
+  if is_installed "puppet"; then
+    log_info "Successfully installed puppet"
+  else
+    log_error "Failed to install puppet"
+  fi
+fi
+{{ end -}}
+
+# =====================================
+# Microsoft Defender
+# =====================================
+{{ if has "microsoft-defender" .packages.custom -}}
+if is_installed "mdatp"; then
+  log_info "Skipping microsoft-defender: already installed"
+else
+  log_info "Installing microsoft-defender..."
+
+  read -e -rp "Enter the full path to the Microsoft Defender Installer (see wiki link in README):" -i "$HOME/Downloads/" installer_path
+  unzip "$installer_path"
+  sudo bash ./defender-userinstallV2.sh
+  sudo python3 MicrosoftDefenderATPOnboardingLinuxServer.py
+  sudo mdatp config real-time-protection --value enabled
+  rm -rf ./defender-userinstallV2.sh ./MicrosoftDefenderATPOnboardingLinuxServer.py
+  rm -rf "$installer_path"
+
+  mdatp health --field org_id
+  mdatp health --field healthy
+  mdatp health --field real_time_protection_enabled
+
+  if is_installed "mdatp"; then
+    log_info "Successfully installed microsoft-defender"
+  else
+    log_error "Failed to install microsoft-defender"
+  fi
+fi
+{{ end -}}

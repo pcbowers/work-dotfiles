@@ -1,0 +1,37 @@
+packages:
+  apt:
+    - git
+    - ripgrep
+    - bat
+    - lsd
+    - curl
+    - wget
+    - jq
+    - unzip
+    - python3-pip
+    - gir1.2-gda-5.0
+    - gir1.2-gsound-1.0
+  flatpak:
+    - com.mattjakeman.ExtensionManager
+  custom:
+    - google-chrome
+    - vs-code
+    - zoxide
+    - starship
+    - mpv
+    - cisco-anyconnect
+    - ghostty
+    - sdkman
+    - uv
+    - fnm
+    - docker
+    - puppet
+    - microsoft-defender
+settings:
+  - desktop
+  - power
+  - graphics
+  - tiling-assistant
+  - dock
+  - peripherals
+  - keybindings
