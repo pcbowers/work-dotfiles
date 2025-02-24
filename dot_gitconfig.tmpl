@@ -1,7 +1,7 @@
 [user]
-    name = {{ .name }}
-    email = {{ .play_email }}
-    signingkey = {{ onepasswordRead "op://private/github/public key" }}
+  name = {{ .name }}
+  email = {{ .play_email }}
+  signingkey = {{ onepasswordRead "op://private/github/public key" }}
 
 [gpg]
   format = ssh
@@ -12,8 +12,8 @@
 [commit]
   gpgsign = true
 
-[includeIf "gitdir:~/work/**"]
+[includeIf "gitdir:~/work/"]
   path = ~/work/.gitconfig
 
-[includeIf "gitdir:~/play/**"]
+[includeIf "gitdir:~/play/"]
   path = ~/play/.gitconfig

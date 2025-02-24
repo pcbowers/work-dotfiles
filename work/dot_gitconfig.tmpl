@@ -1,7 +1,6 @@
 [user]
-    name = {{ .name }}
-    email = {{ .work_email }}
-    signingkey = {{ onepasswordRead "op://work/bitbucket/public key" }}
+  email = {{ .work_email }}
+  signingkey = {{ onepasswordRead "op://work/bitbucket/public key" }}
 
 [gpg]
   format = ssh
