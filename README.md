@@ -52,3 +52,4 @@ You may need to enable the SSH agent in 1password along with its CLI integration
 - This does not install Pano, my clipboard manager of choice. You'll need to install it manually (see [here](https://github.com/oae/gnome-shell-pano)). I do install the Extension Manager for you though.
 - This does not install Emoji Copy, my emoji picker of choice. You'll need to install it manually (see [here](https://github.com/felipeftn/emoji-copy)). I do install the Extension Manager for you though.
 - I also don't install IntelliJ Toolbox directly for you since it requires a version and a license key, which is easier to just install from the JetBrains website (see [here](https://www.jetbrains.com/help/idea/installation-guide.html)
+- I considered adding the `monitors.xml` file, but figured that may change in the future. To set it up, ensure that you configure the settings manually in the `Monitors` section of the `System Settings` app instead of using `<Super>p`.
