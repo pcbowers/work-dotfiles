@@ -43,6 +43,10 @@ if [ -d "$HOME/.local/share/JetBrains/Toolbox/scripts" ]; then
   export PATH="$HOME/.local/share/JetBrains/Toolbox/scripts:$PATH"
 fi
 
+if [ -d "$HOME/.cargo" ]; then
+  source "$HOME/.cargo/env"
+fi
+
 if [ -d "$HOME/.sdkman" ]; then
   export SDKMAN_DIR="$HOME/.sdkman"
   export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"

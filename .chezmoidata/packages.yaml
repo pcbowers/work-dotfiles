@@ -27,6 +27,7 @@ packages:
     - docker
     - puppet
     - microsoft-defender
+    - rust
 settings:
   - desktop
   - power

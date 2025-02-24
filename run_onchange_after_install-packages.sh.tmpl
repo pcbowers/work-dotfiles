@@ -528,3 +528,24 @@ else
   fi
 fi
 {{ end -}}
+
+# =====================================
+# Rust
+# =====================================
+{{ if has "rust" .packages.custom -}}
+if is_installed "cargo"; then
+  log_info "Skipping rust: already installed"
+else
+  log_info "Installing rust..."
+
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --no-modify-path -y
+  source "$HOME/.cargo/env"
+  rustup install nightly
+
+  if is_installed "cargo"; then
+    log_info "Successfully installed rust"
+  else
+    log_error "Failed to install rust"
+  fi
+fi
+{{ end -}}
