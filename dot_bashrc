@@ -1,5 +1,7 @@
 #!/bin/bash
 
+eval "$(op inject --in-file "${HOME}/.secrets")"
+
 case $- in
   *i*) ;;
   *) return ;;
@@ -24,8 +26,6 @@ export PS1="\[\e[32m\]\u\[\e[m\]\[\e[32m\]@\[\e[m\]\[\e[32m\]\h\[\e[m\]:\[\e[34m
 bind '"\e[A": history-substring-search-backward'
 bind '"\e[B": history-substring-search-forward'
 bind '"\C-H": backward-kill-word'
-
-eval "$(op inject --in-file "${HOME}/.secrets")"
 
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
   source /etc/bash_completion
@@ -60,6 +60,7 @@ if [ -d "$HOME/.local/share/fnm" ]; then
   eval "$(fnm completions --shell bash)"
 fi
 
+export COREPACK_ENABLE_AUTO_PIN=0
 export PNPM_HOME="/home/pcbowers/.local/share/pnpm"
 export PATH="$HOME/.local/share/pnpm:$PATH"
 

@@ -10,6 +10,11 @@ weather() {
   curl "wttr.in?format=$1"
 }
 
+# Compresses a video file
+compress() {
+  ffmpeg -i "$1" -vcodec libx264 -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -r 24 -y -an "$(basename "$1" | sed 's/\.[^.]*$//')-compressed.mp4"
+}
+
 # List Directory Contents as a Tree
 tree() {
   lsd -A --tree --depth ${1:-2}
