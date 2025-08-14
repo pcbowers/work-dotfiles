@@ -8,12 +8,16 @@
 
 [gpg "ssh"]
   program = "/opt/1Password/op-ssh-sign"
+  allowedSignersFile = ~/.ssh/allowed_signers
 
 [commit]
   gpgsign = true
 
-[includeIf "gitdir:~/work/"]
-  path = ~/work/.gitconfig
+[includeIf "gitdir:~/work/bitbucket/"]
+  path = ~/work/bitbucket/.gitconfig
+
+[includeIf "gitdir:~/work/azure/"]
+  path = ~/work/azure/.gitconfig
 
 [includeIf "gitdir:~/play/"]
   path = ~/play/.gitconfig
