@@ -60,6 +60,10 @@ if [ -d "$HOME/.local/share/fnm" ]; then
   eval "$(fnm completions --shell bash)"
 fi
 
+if [ -e "$HOME/.bash_completion.d/gradle-completion.bash" ]; then
+  source "$HOME/.bash_completion.d/gradle-completion.bash"
+fi
+
 export COREPACK_ENABLE_AUTO_PIN=0
 export PNPM_HOME="/home/pcbowers/.local/share/pnpm"
 export PATH="$HOME/.local/share/pnpm:$PATH"

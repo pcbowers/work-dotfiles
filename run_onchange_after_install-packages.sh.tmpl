@@ -6,6 +6,7 @@ log_info() { echo -e "\e[1;32m[INFO]\e[0m $1"; }
 log_warn() { echo -e "\e[1;33m[WARN]\e[0m $1"; }
 log_error() { echo -e "\e[1;31m[ERROR]\e[0m $1"; }
 is_installed() { [[ "$(command -v "$1")" ]] && return 0; }
+path_exists() { [[ -e "$1" ]] && return 0; }
 
 # =============================================================================
 # Apt Packages
@@ -392,6 +393,27 @@ else
     log_info "Successfully installed SDKMAN!"
   else
     log_error "Failed to install SDKMAN!"
+  fi
+fi
+{{ end -}}
+
+# =====================================
+# gradle-completion
+# =====================================
+{{ if has "gradle-completion" .packages.custom -}}
+if path_exists "$HOME/.bash_completion.d/gradle-completion.bash"; then
+  log_info "Skipping gradle-completion: already installed"
+else
+  log_info "Installing gradle-completion..."
+
+  mkdir -p $HOME/.bash_completion.d
+  curl -fsSL https://raw.githubusercontent.com/gradle/gradle-completion/master/gradle-completion.bash -o "$HOME/.bash_completion.d/gradle-completion.bash"
+
+  if path_exists "$HOME/.bash_completion.d/gradle-completion.bash"; then
+    log_info "Successfully installed gradle-completion"
+    log_info "Note: you may need to remove -b \"$gradle_build_file\" from $HOME/.bash_completion.d/gradle-completion.bash for compatibility with gradle v9"
+  else
+    log_error "Failed to install gradle-completion"
   fi
 fi
 {{ end -}}

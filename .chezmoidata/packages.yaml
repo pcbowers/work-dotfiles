@@ -22,6 +22,7 @@ packages:
     - cisco-anyconnect
     - ghostty
     - sdkman
+    - gradle-completion
     - uv
     - fnm
     - docker
