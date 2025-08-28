@@ -29,6 +29,7 @@ packages:
     - puppet
     - microsoft-defender
     - rust
+    - go
 settings:
   - desktop
   - power

@@ -571,3 +571,26 @@ else
   fi
 fi
 {{ end -}}
+
+# =====================================
+# Go
+# =====================================
+{{ if has "go" .packages.custom -}}
+if is_installed "go"; then
+  log_info "Skipping go: already installed"
+else
+  log_info "Installing go..."
+
+  sudo rm -rf /usr/local/go
+  curl -L https://go.dev/dl/go1.20.5.linux-amd64.tar.gz -o go.tar.gz
+  sudo tar -C /usr/local -xzf go.tar.gz
+  rm go.tar.gz
+  export PATH="/usr/local/go/bin:$PATH"
+
+  if is_installed "go"; then
+    log_info "Successfully installed go"
+  else
+    log_error "Failed to install go"
+  fi
+fi
+{{ end -}}
