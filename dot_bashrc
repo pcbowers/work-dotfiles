@@ -68,6 +68,7 @@ if [ -e "$HOME/.bash_completion.d/gradle-completion.bash" ]; then
   source "$HOME/.bash_completion.d/gradle-completion.bash"
 fi
 
+export AZURE_DEV_COLLECT_TELEMETRY="no"
 export COREPACK_ENABLE_AUTO_PIN=0
 export PNPM_HOME="/home/pcbowers/.local/share/pnpm"
 export PATH="$HOME/.local/share/pnpm:$PATH"
