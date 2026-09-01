@@ -1,7 +1,5 @@
 #!/bin/bash
 
-eval "$(op inject --in-file "${HOME}/.secrets")"
-
 case $- in
   *i*) ;;
   *) return ;;
@@ -31,6 +29,10 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
   source /etc/bash_completion
 fi
 
+if [ -f /dev/shm/.secrets.env ]; then
+  source /dev/shm/.secrets.env
+fi
+
 if [ -d "$HOME/bin" ]; then
   export PATH="$HOME/bin:$PATH"
 fi
@@ -43,8 +45,17 @@ if [ -d "/usr/local/go/bin" ]; then
   export PATH="/usr/local/go/bin:$PATH"
 fi
 
+if [ -d "$HOME/go/bin" ]; then
+  export PATH="$HOME/go/bin:$PATH"
+fi
+
 if [ -d "$HOME/.local/share/JetBrains/Toolbox/scripts" ]; then
   export PATH="$HOME/.local/share/JetBrains/Toolbox/scripts:$PATH"
+fi
+
+if [ -d "$HOME/.local/share/pnpm" ]; then
+  export PNPM_HOME="$HOME/.local/share/pnpm"
+  export PATH="$HOME/.local/share/pnpm:$PATH"
 fi
 
 if [ -d "$HOME/.cargo" ]; then
@@ -58,6 +69,7 @@ if [ -d "$HOME/.sdkman" ]; then
 fi
 
 if [ -d "$HOME/.local/share/fnm" ]; then
+  export COREPACK_ENABLE_AUTO_PIN=0
   export FNM_PATH="$HOME/.local/share/fnm"
   export PATH="$FNM_PATH:$PATH"
   eval "$(fnm env --use-on-cd --corepack-enabled --version-file-strategy=recursive --resolve-engines --shell bash)"
@@ -69,11 +81,6 @@ if [ -e "$HOME/.bash_completion.d/gradle-completion.bash" ]; then
 fi
 
 export AZURE_DEV_COLLECT_TELEMETRY="no"
-export COREPACK_ENABLE_AUTO_PIN=0
-export PNPM_HOME="/home/pcbowers/.local/share/pnpm"
-export PATH="$HOME/.local/share/pnpm:$PATH"
-export PATH="$HOME/go/bin:$PATH"
 
 eval "$(starship init bash)"
-
 eval "$(zoxide init bash)"

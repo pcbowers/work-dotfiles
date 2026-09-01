@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# Always List Directory After 'cd'
-cd() {
-  builtin cd "$@" && ls
-}
-
 # Get the Weather
 weather() {
   curl "wttr.in?format=$1"
@@ -64,4 +59,18 @@ function rgfzf {
       --preview 'command bat -p --color=always {1} --highlight-line {2}' \
       --preview-window '~8,+{2}-5' \
     | awk -F':' '{print $1}'
+}
+
+# Populate secrets from 1Password into current and future shells
+secrets() {
+  local envfile=/dev/shm/.secrets.env
+
+  op inject --in-file "${HOME}/.secrets" > "$envfile"
+  chmod 600 "$envfile"
+  source "$envfile"
+
+  # local vars
+  # mapfile -t vars < <(grep -oP '^export \K[A-Za-z_][A-Za-z0-9_]*' "${HOME}/.secrets")
+  # systemctl --user import-environment "${vars[@]}"
+  # dbus-update-activation-environment --systemd "${vars[@]}"
 }

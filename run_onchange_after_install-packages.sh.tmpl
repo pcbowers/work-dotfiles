@@ -118,27 +118,6 @@ fi
 {{ end -}}
 
 # =====================================
-# Graphics
-# =====================================
-{{ if has "graphics" .settings -}}
-if [[ "$(prime-select query)" == "nvidia" ]]; then
-  log_info "Skipping graphics settings: already applied"
-else
-  log_info "Applying graphics settings..."
-
-  graphics_settings() {
-    sudo prime-select nvidia
-  }
-
-  if graphics_settings; then
-    log_info "Successfully applied graphics settings"
-  else
-    log_error "Failed to apply graphics settings"
-  fi
-fi
-{{ end -}}
-
-# =====================================
 # Tiling Assistant
 # =====================================
 {{ if has "tiling-assistant" .settings -}}
@@ -166,7 +145,7 @@ fi
 log_info "Applying dock settings..."
 
 dock_settings() {
-  gsettings set org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 44
+  gsettings set org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 32
   gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'focus-minimize-or-previews'
   gsettings set org.gnome.shell.extensions.dash-to-dock show-mounts false
   gsettings set org.gnome.shell.extensions.dash-to-dock show-trash false
@@ -176,23 +155,6 @@ if dock_settings; then
   log_info "Successfully applied dock settings"
 else
   log_error "Failed to apply dock settings"
-fi
-{{ end -}}
-
-# =====================================
-# Peripherals
-# =====================================
-{{ if has "peripherals" .settings -}}
-log_info "Applying peripherals settings..."
-
-peripherals_settings() {
-  gsettings set org.gnome.desktop.peripherals.mouse speed -0.6
-}
-
-if peripherals_settings; then
-  log_info "Successfully applied peripherals settings"
-else
-  log_error "Failed to apply peripherals settings"
 fi
 {{ end -}}
 
@@ -211,10 +173,6 @@ keybindings_settings() {
   gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ name '1Password Quick Access'
   gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ command '1password --quick-access'
   gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ binding '<Control><Shift>Space'
-
-  gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ name 'Screensaver'
-  gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ command '/bin/bash -c "mpv --profile=screensaver $HOME/Videos/aerial4k/*"'
-  gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ binding '<Super><Control>a'
 }
 
 if keybindings_settings; then
@@ -312,27 +270,6 @@ fi
 {{ end -}}
 
 # =====================================
-# mpv
-# =====================================
-{{ if has "mpv" .packages.custom -}}
-if is_installed "mpv"; then
-  log_info "Skipping mpv: already installed"
-else
-  log_info "Installing mpv..."
-
-  sudo curl --output-dir /etc/apt/trusted.gpg.d -O https://apt.fruit.je/fruit.gpg
-  echo "deb http://apt.fruit.je/ubuntu $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") mpv" | sudo tee /etc/apt/sources.list.d/fruit.list
-  sudo apt update && sudo apt install -y mpv
-
-  if is_installed "mpv"; then
-    log_info "Successfully installed mpv"
-  else
-    log_error "Failed to install mpv"
-  fi
-fi
-{{ end -}}
-
-# =====================================
 # Cisco AnyConnect
 # =====================================
 {{ if has "cisco-anyconnect" .packages.custom -}}
@@ -349,25 +286,6 @@ else
     log_info "Successfully installed cisco-anyconnect"
   else
     log_error "Failed to install cisco-anyconnect"
-  fi
-fi
-{{ end -}}
-
-# =====================================
-# Ghostty
-# =====================================
-{{ if has "ghostty" .packages.custom -}}
-if is_installed "ghostty"; then
-  log_info "Skipping ghostty: already installed"
-else
-  log_info "Installing ghostty..."
-
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/mkasberg/ghostty-ubuntu/HEAD/install.sh)"
-
-  if is_installed "ghostty"; then
-    log_info "Successfully installed ghostty"
-  else
-    log_error "Failed to install ghostty"
   fi
 fi
 {{ end -}}
@@ -393,27 +311,6 @@ else
     log_info "Successfully installed SDKMAN!"
   else
     log_error "Failed to install SDKMAN!"
-  fi
-fi
-{{ end -}}
-
-# =====================================
-# gradle-completion
-# =====================================
-{{ if has "gradle-completion" .packages.custom -}}
-if path_exists "$HOME/.bash_completion.d/gradle-completion.bash"; then
-  log_info "Skipping gradle-completion: already installed"
-else
-  log_info "Installing gradle-completion..."
-
-  mkdir -p $HOME/.bash_completion.d
-  curl -fsSL https://raw.githubusercontent.com/gradle/gradle-completion/master/gradle-completion.bash -o "$HOME/.bash_completion.d/gradle-completion.bash"
-
-  if path_exists "$HOME/.bash_completion.d/gradle-completion.bash"; then
-    log_info "Successfully installed gradle-completion"
-    log_info "Note: you may need to remove -b \"$gradle_build_file\" from $HOME/.bash_completion.d/gradle-completion.bash for compatibility with gradle v9"
-  else
-    log_error "Failed to install gradle-completion"
   fi
 fi
 {{ end -}}
@@ -492,61 +389,14 @@ else
   docker login
   docker login nxrm.liberty.edu:5000
   docker login nexus.liberty.edu:5001
+  docker login nexus.liberty.edu:5002
+  docker login nexus.liberty.edu:5999
   docker login registry.redhat.io
 
   if is_installed "docker"; then
     log_info "Successfully installed docker"
   else
     log_error "Failed to install docker"
-  fi
-fi
-{{ end -}}
-
-# =====================================
-# puppet
-# =====================================
-{{ if has "puppet" .packages.custom -}}
-if is_installed "puppet"; then
-  log_info "Skipping puppet: already installed"
-else
-  log_info "Installing puppet..."
-
-  curl -k https://puppetprod01.ipa.liberty.edu:8140/packages/current/install.bash | sudo bash
-  sudo puppet agent -t
-
-  if is_installed "puppet"; then
-    log_info "Successfully installed puppet"
-  else
-    log_error "Failed to install puppet"
-  fi
-fi
-{{ end -}}
-
-# =====================================
-# Microsoft Defender
-# =====================================
-{{ if has "microsoft-defender" .packages.custom -}}
-if is_installed "mdatp"; then
-  log_info "Skipping microsoft-defender: already installed"
-else
-  log_info "Installing microsoft-defender..."
-
-  read -e -rp "Enter the full path to the Microsoft Defender Installer (see wiki link in README):" -i "$HOME/Downloads/" installer_path
-  unzip "$installer_path"
-  sudo bash ./defender-userinstallV2.sh
-  sudo python3 MicrosoftDefenderATPOnboardingLinuxServer.py
-  sudo mdatp config real-time-protection --value enabled
-  rm -rf ./defender-userinstallV2.sh ./MicrosoftDefenderATPOnboardingLinuxServer.py
-  rm -rf "$installer_path"
-
-  mdatp health --field org_id
-  mdatp health --field healthy
-  mdatp health --field real_time_protection_enabled
-
-  if is_installed "mdatp"; then
-    log_info "Successfully installed microsoft-defender"
-  else
-    log_error "Failed to install microsoft-defender"
   fi
 fi
 {{ end -}}
