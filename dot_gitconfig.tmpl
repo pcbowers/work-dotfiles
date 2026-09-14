@@ -13,11 +13,12 @@
 [commit]
   gpgsign = true
 
-[includeIf "gitdir:~/work/bitbucket/"]
-  path = ~/work/bitbucket/.gitconfig
+[includeIf "hasconfig:remote.*.url:git@ssh.dev.azure.com:**"]
+  path = ~/.config/git/azure.gitconfig
+[includeIf "hasconfig:remote.*.url:https://*dev.azure.com/**"]
+  path = ~/.config/git/azure.gitconfig
 
-[includeIf "gitdir:~/work/azure/"]
-  path = ~/work/azure/.gitconfig
-
-[includeIf "gitdir:~/play/"]
-  path = ~/play/.gitconfig
+[includeIf "hasconfig:remote.*.url:ssh://git@bitbucket.liberty.edu:**"]
+  path = ~/.config/git/bitbucket.gitconfig
+[includeIf "hasconfig:remote.*.url:https://bitbucket.liberty.edu/**"]
+  path = ~/.config/git/bitbucket.gitconfig

@@ -10,11 +10,6 @@ compress() {
   ffmpeg -i "$1" -vcodec libx264 -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -r 24 -y -an "$(basename "$1" | sed 's/\.[^.]*$//')-compressed.mp4"
 }
 
-# List Directory Contents as a Tree
-tree() {
-  lsd -A --tree --depth ${1:-2}
-}
-
 # Reboot a Spring app on changes
 gradledev() {
   ./gradlew build --continuous --quiet -xtest -xdockerRun > /dev/null 0>&1 2>&1 &
@@ -52,15 +47,6 @@ extract() {
   fi
 }
 
-# Search contents of a directory
-function rgfzf {
-  command rg --color=always --line-number --no-heading --smart-case "${*:-}" \
-    | command fzf -d':' --ansi \
-      --preview 'command bat -p --color=always {1} --highlight-line {2}' \
-      --preview-window '~8,+{2}-5' \
-    | awk -F':' '{print $1}'
-}
-
 # Populate secrets from 1Password into current and future shells
 secrets() {
   local envfile=/dev/shm/.secrets.env
@@ -68,9 +54,9 @@ secrets() {
   op inject --in-file "${HOME}/.secrets" > "$envfile"
   chmod 600 "$envfile"
   source "$envfile"
-
-  # local vars
-  # mapfile -t vars < <(grep -oP '^export \K[A-Za-z_][A-Za-z0-9_]*' "${HOME}/.secrets")
-  # systemctl --user import-environment "${vars[@]}"
-  # dbus-update-activation-environment --systemd "${vars[@]}"
 }
+
+# JetBrains – detached launchers (Toolbox-safe)
+function idea() { command idea "$@" > /dev/null 2>&1 & }
+function rider() { command rider "$@" > /dev/null 2>&1 & }
+function datagrip() { command datagrip "$@" > /dev/null 2>&1 & }

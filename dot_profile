@@ -17,7 +17,3 @@ fi
 if [ -d "$HOME/.local/share/JetBrains/Toolbox/scripts" ]; then
   export PATH="$HOME/.local/share/JetBrains/Toolbox/scripts:$PATH"
 fi
-
-if [ -d "$HOME/.cargo" ]; then
-  . "$HOME/.cargo/env"
-fi

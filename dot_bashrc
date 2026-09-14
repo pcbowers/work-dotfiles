@@ -14,7 +14,6 @@ shopt -s checkwinsize
 
 export VISUAL=nvim
 export EDITOR=nvim
-export SVN_EDITOR=nvim
 
 source "$HOME/.bash_aliases"
 source "$HOME/.bash_functions"
@@ -33,54 +32,8 @@ if [ -f /dev/shm/.secrets.env ]; then
   source /dev/shm/.secrets.env
 fi
 
-if [ -d "$HOME/bin" ]; then
-  export PATH="$HOME/bin:$PATH"
-fi
-
-if [ -d "$HOME/.local/bin" ]; then
-  export PATH="$HOME/.local/bin:$PATH"
-fi
-
-if [ -d "/usr/local/go/bin" ]; then
-  export PATH="/usr/local/go/bin:$PATH"
-fi
-
-if [ -d "$HOME/go/bin" ]; then
-  export PATH="$HOME/go/bin:$PATH"
-fi
-
-if [ -d "$HOME/.local/share/JetBrains/Toolbox/scripts" ]; then
-  export PATH="$HOME/.local/share/JetBrains/Toolbox/scripts:$PATH"
-fi
-
-if [ -d "$HOME/.local/share/pnpm" ]; then
-  export PNPM_HOME="$HOME/.local/share/pnpm"
-  export PATH="$HOME/.local/share/pnpm:$PATH"
-fi
-
-if [ -d "$HOME/.cargo" ]; then
-  source "$HOME/.cargo/env"
-fi
-
-if [ -d "$HOME/.sdkman" ]; then
-  export SDKMAN_DIR="$HOME/.sdkman"
-  export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
-  source "$HOME/.sdkman/bin/sdkman-init.sh"
-fi
-
-if [ -d "$HOME/.local/share/fnm" ]; then
-  export COREPACK_ENABLE_AUTO_PIN=0
-  export FNM_PATH="$HOME/.local/share/fnm"
-  export PATH="$FNM_PATH:$PATH"
-  eval "$(fnm env --use-on-cd --corepack-enabled --version-file-strategy=recursive --resolve-engines --shell bash)"
-  eval "$(fnm completions --shell bash)"
-fi
-
-if [ -e "$HOME/.bash_completion.d/gradle-completion.bash" ]; then
-  source "$HOME/.bash_completion.d/gradle-completion.bash"
-fi
-
 export AZURE_DEV_COLLECT_TELEMETRY="no"
 
+eval "$(mise activate bash)"
 eval "$(starship init bash)"
 eval "$(zoxide init bash)"

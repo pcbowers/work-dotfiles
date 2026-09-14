@@ -1,33 +1,114 @@
 packages:
   apt:
     - git
-    - ripgrep
-    - bat
-    - lsd
     - curl
     - wget
-    - jq
     - unzip
     - python3-pip
     - gir1.2-gda-5.0
     - gir1.2-gsound-1.0
+    - dotnet-sdk-10.0
+    - aspnetcore-runtime-10.0
+    - gnome-tweaks
+    - gnome-sushi
+    - ghostty
+    - libopengl0
+
   flatpak:
     - com.mattjakeman.ExtensionManager
+    - be.alexandervanhee.gradia
+    - com.usebruno.Bruno
+
+  extensions:
+    - just-perfection-desktop@just-perfection
+    - vicinae@dagimg-dot
+    - paperwm@paperwm.github.com
+
   custom:
-    - google-chrome
-    - vs-code
-    - zoxide
-    - starship
-    - cisco-anyconnect
-    - sdkman
-    - uv
-    - fnm
+    - chrome
+    - vscode
+    - spotify
     - docker
-    - rust
-    - go
+    - azure-cli
+    - typora
+    - vicinae
+
 settings:
-  - desktop
-  - power
-  - tiling-assistant
-  - dock
-  - keybindings
+  - "gsettings set org.gnome.desktop.default-applications.terminal exec '/usr/bin/ghostty'"
+
+  - "gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'"
+  - "gsettings set org.gnome.desktop.interface clock-show-seconds true"
+  - "gsettings set org.gnome.desktop.interface clock-show-date true"
+  - "gsettings set org.gnome.desktop.interface clock-show-weekday true"
+  - "gsettings set org.gnome.desktop.interface clock-format '12h'"
+  - "gsettings set org.gnome.desktop.interface show-battery-percentage true"
+
+  - "gsettings set org.gnome.shell.extensions.ding icon-size 'small'"
+  - "gsettings set org.gnome.shell.extensions.ding show-home false"
+  - "gnome-extensions disable ding@rastersoft.com"
+
+  - "gsettings set org.gnome.settings-daemon.plugins.power lid-close-ac-action 'nothing'"
+  - "gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'"
+  - "gsettings set org.gnome.desktop.session idle-delay 0"
+  - "powerprofilesctl set performance"
+
+  - "gsettings set org.gnome.shell.extensions.tiling-assistant enable-tiling-popup true"
+  - "gsettings set org.gnome.shell.extensions.tiling-assistant enable-raise-tile-group false"
+  - "gsettings set org.gnome.shell.extensions.tiling-assistant enable-untile-animations false"
+  - "gsettings set org.gnome.shell.extensions.tiling-assistant enable-tile-animations false"
+  - "gsettings set org.gnome.shell.extensions.tiling-assistant disable-tile-groups true"
+  - "gnome-extensions disable tiling-assistant@ubuntu.com"
+
+  - "gsettings set org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 32"
+  - "gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'focus-minimize-or-previews'"
+  - "gsettings set org.gnome.shell.extensions.dash-to-dock show-mounts false"
+  - "gsettings set org.gnome.shell.extensions.dash-to-dock show-trash false"
+  - "gsettings set org.gnome.shell.extensions.dash-to-dock dock-position 'LEFT'"
+  - "gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false"
+  - "gsettings set org.gnome.shell.extensions.dash-to-dock transparency-mode 'DYNAMIC'"
+
+  - 'gsettings set org.gnome.shell.keybindings toggle-message-tray "[''<Super>m'']"'
+  - "gsettings set org.gnome.shell.keybindings show-screenshot-ui '[]'"
+  - "gsettings set org.freedesktop.ibus.panel.emoji hotkey '[]'"
+
+  - 'dconf write /org/gnome/shell/extensions/vicinae/blocked-applications "[''1password'', ''com.onepassword.OnePassword'']"'
+  - "dconf write /org/gnome/shell/extensions/vicinae/show-status-indicator false"
+
+  - "dconf write /org/gnome/shell/extensions/just-perfection/accessibility-menu false"
+  - "dconf write /org/gnome/shell/extensions/just-perfection/events-button false"
+  - "dconf write /org/gnome/shell/extensions/just-perfection/panel-in-overview true"
+  - "dconf write /org/gnome/shell/extensions/just-perfection/quick-settings-backlight false"
+  - "dconf write /org/gnome/shell/extensions/just-perfection/quick-settings-dark-mode false"
+  - "dconf write /org/gnome/shell/extensions/just-perfection/theme false"
+  - "dconf write /org/gnome/shell/extensions/just-perfection/window-demands-attention-focus true"
+  - "dconf write /org/gnome/shell/extensions/just-perfection/world-clock false"
+
+  - "dconf write /org/gnome/shell/extensions/paperwm/horizontal-margin 4"
+  - "dconf write /org/gnome/shell/extensions/paperwm/vertical-margin 4"
+  - "dconf write /org/gnome/shell/extensions/paperwm/vertical-margin-bottom 4"
+  - "dconf write /org/gnome/shell/extensions/paperwm/window-gap 4"
+  - "dconf write /org/gnome/shell/extensions/paperwm/winprops \"['{\\\"wm_class\\\":\\\"vicinae\\\",\\\"scratch_layer\\\":true}', '{\\\"wm_class\\\":\\\"com.onepassword.OnePassword\\\",\\\"title\\\":\\\"Quick Access — 1Password\\\",\\\"scratch_layer\\\":true}']\""
+  - "dconf write /org/gnome/shell/extensions/paperwm/minimap-scale 0.0"
+  - "dconf write /org/gnome/shell/extensions/paperwm/minimap-shade-opacity 0"
+  - "dconf write /org/gnome/shell/extensions/paperwm/selection-border-radius-top 5"
+  - "dconf write /org/gnome/shell/extensions/paperwm/show-focus-mode-icon false"
+  - "dconf write /org/gnome/shell/extensions/paperwm/show-open-position-icon false"
+  - "dconf write /org/gnome/shell/extensions/paperwm/show-window-position-bar false"
+  - "dconf write /org/gnome/shell/extensions/paperwm/show-workspace-indicator false"
+
+custom_keybindings:
+  - name: 1Password Quick Access
+    command: 1password --quick-access
+    binding: <Control><Shift>space
+  - name: Gradia Screenshot
+    command: flatpak run be.alexandervanhee.gradia --screenshot=INTERACTIVE
+    binding: Print
+  - name: Vicinae
+    command: vicinae toggle
+    binding: <Control>space
+  - name: Vicinae Clipboard
+    command: vicinae deeplink vicinae://launch/clipboard/history
+    binding: <Super>v
+  - name: Vicinae Emoji
+    command: vicinae deeplink vicinae://launch/core/search-emojis
+    binding: <Super>period

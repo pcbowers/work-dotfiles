@@ -6,3 +6,6 @@
     name = {{ $name | quote }}
     work_email = {{ $work_email | quote }}
     play_email = {{ $play_email | quote }}
+
+[hooks.read-source-state.pre]
+    command = ".local/share/chezmoi/.install-password-manager.sh"
