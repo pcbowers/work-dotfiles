@@ -87,7 +87,7 @@ settings:
   - "dconf write /org/gnome/shell/extensions/paperwm/vertical-margin 4"
   - "dconf write /org/gnome/shell/extensions/paperwm/vertical-margin-bottom 4"
   - "dconf write /org/gnome/shell/extensions/paperwm/window-gap 4"
-  - "dconf write /org/gnome/shell/extensions/paperwm/winprops \"['{\\\"wm_class\\\":\\\"vicinae\\\",\\\"scratch_layer\\\":true}', '{\\\"wm_class\\\":\\\"com.onepassword.OnePassword\\\",\\\"title\\\":\\\"Quick Access — 1Password\\\",\\\"scratch_layer\\\":true}']\""
+  - "dconf write /org/gnome/shell/extensions/paperwm/winprops \"['{\\\"wm_class\\\":\\\"vicinae\\\",\\\"scratch_layer\\\":true}', '{\\\"wm_class\\\":\\\"com.onepassword.OnePassword\\\",\\\"title\\\":\\\"Quick Access — 1Password\\\",\\\"scratch_layer\\\":true}', '{\\\"wm_class\\\":\\\"com.onepassword.OnePassword\\\",\\\"title\\\":\\\"1Password\\\",\\\"scratch_layer\\\":true}']\""
   - "dconf write /org/gnome/shell/extensions/paperwm/minimap-scale 0.0"
   - "dconf write /org/gnome/shell/extensions/paperwm/minimap-shade-opacity 0"
   - "dconf write /org/gnome/shell/extensions/paperwm/selection-border-radius-top 5"
