@@ -22,3 +22,8 @@
   path = ~/.config/git/bitbucket.gitconfig
 [includeIf "hasconfig:remote.*.url:https://bitbucket.liberty.edu/**"]
   path = ~/.config/git/bitbucket.gitconfig
+
+[includeIf "gitdir:~/projects/azure/**"]
+  path = ~/.config/git/azure.gitconfig
+[includeIf "gitdir:~/projects/bitbucket/**"]
+  path = ~/.config/git/bitbucket.gitconfig

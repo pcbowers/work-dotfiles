@@ -22,7 +22,7 @@ packages:
   extensions:
     - just-perfection-desktop@just-perfection
     - vicinae@dagimg-dot
-    - paperwm@paperwm.github.com
+    - tilingshell@ferrarodomenico.com
 
   custom:
     - chrome
@@ -32,6 +32,8 @@ packages:
     - azure-cli
     - typora
     - vicinae
+    # TODO: Add murmure for speech to text
+    # TODO: Consider adding ollama for local LLMs and murmure usage
 
 settings:
   - "gsettings set org.gnome.desktop.default-applications.terminal exec '/usr/bin/ghostty'"
@@ -63,8 +65,14 @@ settings:
   - "gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'focus-minimize-or-previews'"
   - "gsettings set org.gnome.shell.extensions.dash-to-dock show-mounts false"
   - "gsettings set org.gnome.shell.extensions.dash-to-dock show-trash false"
+  - "gsettings set org.gnome.shell.extensions.dash-to-dock show-show-apps-button false"
   - "gsettings set org.gnome.shell.extensions.dash-to-dock dock-position 'LEFT'"
   - "gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false"
+  - "gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false"
+  - "gsettings set org.gnome.shell.extensions.dash-to-dock autohide true"
+  - "gsettings set org.gnome.shell.extensions.dash-to-dock animation-time 0.05"
+  - "gsettings set org.gnome.shell.extensions.dash-to-dock hide-delay 0"
+  - "gsettings set org.gnome.shell.extensions.dash-to-dock require-pressure-to-show false"
   - "gsettings set org.gnome.shell.extensions.dash-to-dock transparency-mode 'DYNAMIC'"
 
   - 'gsettings set org.gnome.shell.keybindings toggle-message-tray "[''<Super>m'']"'
@@ -83,18 +91,7 @@ settings:
   - "dconf write /org/gnome/shell/extensions/just-perfection/window-demands-attention-focus true"
   - "dconf write /org/gnome/shell/extensions/just-perfection/world-clock false"
 
-  - "dconf write /org/gnome/shell/extensions/paperwm/horizontal-margin 4"
-  - "dconf write /org/gnome/shell/extensions/paperwm/vertical-margin 4"
-  - "dconf write /org/gnome/shell/extensions/paperwm/vertical-margin-bottom 4"
-  - "dconf write /org/gnome/shell/extensions/paperwm/window-gap 4"
-  - "dconf write /org/gnome/shell/extensions/paperwm/winprops \"['{\\\"wm_class\\\":\\\"vicinae\\\",\\\"scratch_layer\\\":true}', '{\\\"wm_class\\\":\\\"com.onepassword.OnePassword\\\",\\\"title\\\":\\\"Quick Access — 1Password\\\",\\\"scratch_layer\\\":true}', '{\\\"wm_class\\\":\\\"com.onepassword.OnePassword\\\",\\\"title\\\":\\\"1Password\\\",\\\"scratch_layer\\\":true}']\""
-  - "dconf write /org/gnome/shell/extensions/paperwm/minimap-scale 0.0"
-  - "dconf write /org/gnome/shell/extensions/paperwm/minimap-shade-opacity 0"
-  - "dconf write /org/gnome/shell/extensions/paperwm/selection-border-radius-top 5"
-  - "dconf write /org/gnome/shell/extensions/paperwm/show-focus-mode-icon false"
-  - "dconf write /org/gnome/shell/extensions/paperwm/show-open-position-icon false"
-  - "dconf write /org/gnome/shell/extensions/paperwm/show-window-position-bar false"
-  - "dconf write /org/gnome/shell/extensions/paperwm/show-workspace-indicator false"
+  # TODO: Add tiling shell settings
 
 custom_keybindings:
   - name: 1Password Quick Access
@@ -105,10 +102,16 @@ custom_keybindings:
     binding: Print
   - name: Vicinae
     command: vicinae toggle
-    binding: <Control>space
+    binding: <Control><Alt>space
   - name: Vicinae Clipboard
     command: vicinae deeplink vicinae://launch/clipboard/history
     binding: <Super>v
   - name: Vicinae Emoji
     command: vicinae deeplink vicinae://launch/core/search-emojis
     binding: <Super>period
+  - name: Murmure
+    command: murmure --transcription
+    binding: <Alt>slash
+  - name: Murmure LLM
+    command: murmure --llm-mode 1
+    binding: <Alt><Shift>slash
