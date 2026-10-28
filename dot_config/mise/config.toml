@@ -10,11 +10,17 @@ java = ["temurin-17", "temurin-25"]
 jq = "latest"
 lazydocker = "latest"
 lazygit = "latest"
-node = "latest"
+node = "lts"
 oc = "latest"
+pnpm = "latest"
+"npm:@angular/cli" = "latest"
+python = "latest"
 ripgrep = "latest"
 rust = "latest"
 starship = "latest"
 uv = "latest"
 yq = "latest"
 zoxide = "latest"
+
+[settings]
+idiomatic_version_file_enable_tools = ["node", "java"]

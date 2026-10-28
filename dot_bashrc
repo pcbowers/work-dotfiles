@@ -32,8 +32,15 @@ if [ -f /dev/shm/.secrets.env ]; then
   source /dev/shm/.secrets.env
 fi
 
+export PNPM_HOME='/home/pcbowers/.local/share/pnpm'
+case ":$PATH:" in
+  ":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+
 export AZURE_DEV_COLLECT_TELEMETRY="no"
 
 eval "$(mise activate bash)"
 eval "$(starship init bash)"
 eval "$(zoxide init bash)"
+source <(ng completion script)

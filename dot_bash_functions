@@ -55,8 +55,3 @@ secrets() {
   chmod 600 "$envfile"
   source "$envfile"
 }
-
-# JetBrains – detached launchers (Toolbox-safe)
-function idea() { command idea "$@" > /dev/null 2>&1 & }
-function rider() { command rider "$@" > /dev/null 2>&1 & }
-function datagrip() { command datagrip "$@" > /dev/null 2>&1 & }

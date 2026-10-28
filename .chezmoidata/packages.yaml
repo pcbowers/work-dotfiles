@@ -76,7 +76,7 @@ settings:
   - "gsettings set org.gnome.shell.extensions.dash-to-dock transparency-mode 'DYNAMIC'"
 
   - 'gsettings set org.gnome.shell.keybindings toggle-message-tray "[''<Super>m'']"'
-  - "gsettings set org.gnome.shell.keybindings show-screenshot-ui '[]'"
+  - 'gsettings set org.gnome.shell.keybindings show-screenshot-ui "[''<Ctrl>Print'']"'
   - "gsettings set org.freedesktop.ibus.panel.emoji hotkey '[]'"
 
   - 'dconf write /org/gnome/shell/extensions/vicinae/blocked-applications "[''1password'', ''com.onepassword.OnePassword'']"'
