@@ -23,4 +23,4 @@ yq = "latest"
 zoxide = "latest"
 
 [settings]
-idiomatic_version_file_enable_tools = ["node", "java"]
+idiomatic_version_file_enable_tools = ["node", "pnpm", "java"]
