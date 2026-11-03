@@ -32,6 +32,7 @@ packages:
     - azure-cli
     - typora
     - vicinae
+    - vp
     # TODO: Add murmure for speech to text
     # TODO: Consider adding ollama for local LLMs and murmure usage
 

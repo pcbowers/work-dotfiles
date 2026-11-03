@@ -254,6 +254,12 @@ EOF
   *)
     warn "No installer defined for '{{ . }}' — skipping"
     ;;
+  
+  vp)
+    if ! cmd_exists vp; then
+      log "Installing Vite Plus..."
+      curl -fsSL https://vite.plus | VP_NODE_MANAGER=no VP_PM_MANAGER=no bash
+      source "$HOME/.config/vite-plus/env"
 esac
 {{ end -}}
 
