@@ -19,3 +19,4 @@ if [ -d "$HOME/.local/share/JetBrains/Toolbox/scripts" ]; then
 fi
 
 eval "$(mise activate bash --shims)"
+source "$HOME/.config/vite-plus/env"
