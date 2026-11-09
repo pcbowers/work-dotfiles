@@ -22,7 +22,6 @@ packages:
   extensions:
     - just-perfection-desktop@just-perfection
     - vicinae@dagimg-dot
-    - tilingshell@ferrarodomenico.com
 
   custom:
     - chrome
@@ -54,13 +53,6 @@ settings:
   - "gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'"
   - "gsettings set org.gnome.desktop.session idle-delay 0"
   - "powerprofilesctl set performance"
-
-  - "gsettings set org.gnome.shell.extensions.tiling-assistant enable-tiling-popup true"
-  - "gsettings set org.gnome.shell.extensions.tiling-assistant enable-raise-tile-group false"
-  - "gsettings set org.gnome.shell.extensions.tiling-assistant enable-untile-animations false"
-  - "gsettings set org.gnome.shell.extensions.tiling-assistant enable-tile-animations false"
-  - "gsettings set org.gnome.shell.extensions.tiling-assistant disable-tile-groups true"
-  - "gnome-extensions disable tiling-assistant@ubuntu.com"
 
   - "gsettings set org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 32"
   - "gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'focus-minimize-or-previews'"
